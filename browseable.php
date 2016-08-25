@@ -57,7 +57,6 @@ function do_easy_event_list() {
 		<?php
 			$js_date_array = json_encode($php_date_array);
 			echo "var js_date_array = ". $js_date_array . ";\n";
-			echo "var today_str = ". $begin_date->format('Ymd') . ";\n";
 		?>
 
 		function showDivs(dateStr) {
