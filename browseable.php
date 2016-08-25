@@ -35,7 +35,7 @@ function do_easy_event_list() {
 	$interval = DateInterval::createFromDateString('1 day');
 	$period = new DatePeriod($begin_date, $interval, $end_date);
 
-	$event_map = array();
+	$php_date_array = array();
 
 	foreach ( $period as $dt ) {
 		$thisDateFormat = $dt->format('Ymd');
@@ -47,18 +47,14 @@ function do_easy_event_list() {
 		echo $dt->format('l, m/d');
 		echo '</a> ';
 
-		// Create associative array for the ten dates 
-		$event_map[$thisDateFormat] = array();
+		// Create array of the ten dates 
+		array_push($php_date_array, $thisDateFormat);
 	}
 
 	?>
 
 	<script type="text/javascript">
 		<?php
-			$php_date_array = array();
-			foreach($event_map as $date_str => $date_value) {
-				array_push($php_date_array, $date_str);
-			}
 			$js_date_array = json_encode($php_date_array);
 			echo "var js_date_array = ". $js_date_array . ";\n";
 			echo "var today_str = ". $begin_date->format('Ymd') . ";\n";
