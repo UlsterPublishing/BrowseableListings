@@ -29,8 +29,8 @@ function do_easy_event_list() {
 		)
 	);
 
-	$begin_date = new DateTime();
-	$end_date = new DateTime();
+	$begin_date = new DateTime(date('Y-m-d'));
+	$end_date = new DateTime(date('Y-m-d'));
 	$end_date->modify('+10 day');
 	$interval = DateInterval::createFromDateString('1 day');
 	$period = new DatePeriod($begin_date, $interval, $end_date);
@@ -53,16 +53,36 @@ function do_easy_event_list() {
 
 	?>
 
+	<br/>
+	<div id='date_header'></div>
+
 	<script type="text/javascript">
 		<?php
 			$js_date_array = json_encode($php_date_array);
 			echo "var js_date_array = ". $js_date_array . ";\n";
 		?>
 
-		function showDivs(dateStr) {
+		function showDivs(dateId) {
+
+			var weekday = new Array(7);
+			weekday[0]=  "Sunday";
+			weekday[1] = "Monday";
+			weekday[2] = "Tuesday";
+			weekday[3] = "Wednesday";
+			weekday[4] = "Thursday";
+			weekday[5] = "Friday";
+			weekday[6] = "Saturday";
+
+			var dateStr = dateId.toString();
+			var dateObjStr = dateStr[0] + dateStr[1] + dateStr[2] + dateStr[3] + '-' + dateStr[4] + dateStr[5] + '-' + dateStr[6] + dateStr[7];
+			var d = new Date(dateObjStr);
+			var dateHeaderHTML = "<strong><h2>" + weekday[d.getDay()] + ", " + d.getMonth() + "/" + d.getDate() + "</h2></strong>";
+			var dateHeaderDiv = document.getElementById('date_header');
+			dateHeaderDiv.innerHTML = dateHeaderHTML;
+
 			for (var x = 0; x < js_date_array.length; x++) {
 				var divsToMod = document.getElementsByClassName(js_date_array[x]);
-				if (js_date_array[x] == dateStr) {
+				if (js_date_array[x] == dateId) {
 					for(var i = 0; i < divsToMod.length; i++) {
 						divsToMod[i].style.visibility="visible";
 						divsToMod[i].style.display="block";
@@ -103,9 +123,9 @@ function do_easy_event_list() {
 
 	<script type="text/javascript">
 		<?php
-			echo "var today_str = ". $begin_date->format('Ymd') . ";\n";
+			echo "var today_id = ". $begin_date->format('Ymd') . ";\n";
 		?>
-		showDivs(today_str);
+		showDivs(today_id);
 	</script>
 
 	<?php
