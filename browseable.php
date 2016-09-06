@@ -108,9 +108,18 @@ function do_easy_event_list() {
 
 		$time_interval = tribe_get_start_date( $events->ID, false, $format = 'g:i a') . "-" . tribe_get_end_date( $events->ID, false, $format = 'g:i a');
 
+		// Remove time string if all day event
 		$time_string = '';
 		if ($time_interval != "12:00 am-11:59 pm") {
 			$time_string = $time_interval;
+		}
+
+		// If start and end time are the same, only list it once
+		$times = explode("-", $time_interval);
+		if (count($times) == 2) {
+			if ($times[0] == $times[1]) {
+				$time_string = $times[0];
+			}
 		}
 
 		echo '<div class=';
