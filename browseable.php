@@ -21,7 +21,7 @@ function do_easy_event_list() {
 			'meta_query' => array(
 				array(
 					'key' => '_EventStartDate',
-					'value' => array(date('Y-m-d'),date('Y-m-d', strtotime("+9 day"))),
+					'value' => array(date('Y-m-d', strtotime("-4 hours")),date('Y-m-d', strtotime("+8 days 20 hours"))),
 					'compare' => 'BETWEEN',
 					'type' => 'DATE'
 				)
@@ -29,8 +29,8 @@ function do_easy_event_list() {
 		)
 	);
 
-	$begin_date = new DateTime(date('Y-m-d'));
-	$end_date = new DateTime(date('Y-m-d'));
+	$begin_date = new DateTime(date('Y-m-d', strtotime("-4 hours")));
+	$end_date = new DateTime(date('Y-m-d', strtotime("-4 hours")));
 	$end_date->modify('+10 day');
 	$interval = DateInterval::createFromDateString('1 day');
 	$period = new DatePeriod($begin_date, $interval, $end_date);
@@ -76,7 +76,9 @@ function do_easy_event_list() {
 			var dateStr = dateId.toString();
 			var dateObjStr = dateStr[0] + dateStr[1] + dateStr[2] + dateStr[3] + '-' + dateStr[4] + dateStr[5] + '-' + dateStr[6] + dateStr[7];
 			var d = new Date(dateObjStr);
-			var dateHeaderHTML = "<strong><h2>" + weekday[d.getDay()] + ", " + d.getMonth() + "/" + d.getDate() + "</h2></strong>";
+			d.setTime(d.getTime() + d.getTimezoneOffset()*60*1000); // Offset based on time zone
+			var month = parseInt(d.getMonth()) + 1;
+			var dateHeaderHTML = "<br/><strong><h2>" + weekday[d.getDay()] + ", " + month + "/" + d.getDate() + "</h2></strong>";
 			var dateHeaderDiv = document.getElementById('date_header');
 			dateHeaderDiv.innerHTML = dateHeaderHTML;
 
@@ -104,11 +106,18 @@ function do_easy_event_list() {
 	while ($events->have_posts()) {
 		$events->the_post();
 
+		$time_interval = tribe_get_start_date( $events->ID, false, $format = 'g:i a') . "-" . tribe_get_end_date( $events->ID, false, $format = 'g:i a');
+
+		$time_string = '';
+		if ($time_interval != "12:00 am-11:59 pm") {
+			$time_string = $time_interval;
+		}
+
 		echo '<div class=';
 		echo tribe_get_start_date($events->ID, false, $format = 'Ymd');
 		echo '>';
 		echo '<p>';
-		echo tribe_get_start_date( $events->ID, false, $format = 'g:i a') . "-" . tribe_get_end_date( $events->ID, false, $format = 'g:i a');
+		echo $time_string;
 		echo '<strong><a href="';
 		echo the_permalink();
 		echo '">';
