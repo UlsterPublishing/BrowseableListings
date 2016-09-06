@@ -118,7 +118,7 @@ function do_easy_event_list() {
 		echo '>';
 		echo '<p>';
 		echo $time_string;
-		echo '<strong><a href="';
+		echo ' <strong><a href="';
 		echo the_permalink();
 		echo '">';
 		echo the_title();
